@@ -1,20 +1,24 @@
+import { TabWidget } from "std-widgets.slint";
+import { HomeView, LibraryView, SettingsView } from "views/views.slint";
+
 export component MainWindow inherits Window {
     preferred-height: 480px;
     preferred-width: 640px;
     title: "Stella (Early Development)";
-    VerticalLayout {
-        alignment: center;
-        Text {
-            horizontal-alignment: center;
-            text: "Stella";
-            font-size: 40px;
-            padding-bottom: 12px;
+    TabWidget {
+        Tab {
+            title: "Home";
+            HomeView { }
         }
 
-        Text {
-            horizontal-alignment: center;
-            text: "A comic reader in early development :)";
-            font-size: 20px;
+        Tab {
+            title: "Library";
+            LibraryView { }
+        }
+
+        Tab {
+            title: "Settings";
+            SettingsView { }
         }
     }
 }

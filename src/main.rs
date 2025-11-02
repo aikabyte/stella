@@ -1,9 +1,18 @@
 slint::include_modules!();
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-	let ui = MainWindow::new()?;
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let ui = MainWindow::new()?;
 
-	ui.run()?;
+    ui.on_prev_page(|| {
+        println!("called: prev-page()");
+    });
 
-	Ok(())
+    ui.on_next_page(|| {
+        println!("called: next-page()");
+    });
+
+    ui.run()?;
+
+    Ok(())
 }

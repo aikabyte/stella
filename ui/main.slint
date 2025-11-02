@@ -1,11 +1,14 @@
 import { TabWidget } from "std-widgets.slint";
-import { HomeView, LibraryView, SettingsView } from "views/views.slint";
+import { HomeView, LibraryView, SettingsView, ReaderView } from "views/views.slint";
 
 export component MainWindow inherits Window {
     preferred-height: 480px;
     preferred-width: 640px;
     title: "Stella (Early Development)";
-    TabWidget {
+    in-out property <image> current_image;
+    callback prev-page();
+    callback next-page();
+    tabs := TabWidget {
         Tab {
             title: "Home";
             HomeView { }
@@ -19,6 +22,20 @@ export component MainWindow inherits Window {
         Tab {
             title: "Settings";
             SettingsView { }
+        }
+
+		// testing, testing
+        Tab {
+            title: "Reader";
+            ReaderView {
+                current_image: root.current_image;
+                prev-page => {
+                    root.prev-page();
+                }
+                next-page => {
+                    root.next-page();
+                }
+            }
         }
     }
 }

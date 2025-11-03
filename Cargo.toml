@@ -3,21 +3,13 @@ name = "stella"
 version = "0.1.0"
 edition = "2024"
 
-# TODO: Avoid 'features = full' to speed up certain processes.
 [dependencies]
-async_zip = { version = "0.0.18", features = ["full"] }
-image = "0.25.8"
-limbo = "0.0.22"
-rayon = "1.11.0"
-rfd = "0.15.4"
 slint = { version = "1.13.1", default-features = false, features = [
 	"backend-winit",
 	"compat-1-2",
 	"std",
 	"renderer-software",
 ] }
-tokio = { version = "1.48.0", features = ["full"] }
-walkdir = "2.5.0"
 
 [build-dependencies]
 slint-build = "1.13.1"

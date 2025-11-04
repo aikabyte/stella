@@ -1,7 +1,7 @@
 {
 	"recommendations": [
+		"davidanson.vscode-markdownlint",
 		"rust-lang.rust-analyzer",
-		"slint.slint",
 		"vadimcn.vscode-lldb"
 	]
 }

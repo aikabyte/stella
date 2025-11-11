@@ -3,7 +3,42 @@ name = "stella"
 version = "0.1.0"
 edition = "2024"
 
+# Once you've paid the binary size cost of a dependency, you might as well leverage its full capabillities.
 [dependencies]
-iced = { version = "0.13.1", default-features = false, features = [
-	"tiny-skia",
+async_zip = { version = "0.0.18", default-features = false, features = [
+	"deflate",
+	"tokio",
+	"tokio-fs",
 ] }
+
+image = { version = "0.25.8", default-features = false, features = [
+	"jpeg",
+	"png",
+	"rayon",
+] }
+
+slint = { version = "1.14.1", default-features = false, features = [
+	"backend-winit",
+	"compat-1-2",
+	"renderer-software",
+	"std",
+] }
+
+tokio = { version = "1.48.0", default-features = false, features = [
+	"fs",
+	"io-util",
+	"macros",
+	"parking_lot",
+	"rt-multi-thread",
+] }
+
+[build-dependencies]
+slint-build = "1.14.1"
+
+[profile.release]
+codegen-units = 1
+debug = 0
+lto = true
+opt-level = 3
+panic = "abort"
+strip = "symbols"

@@ -1,19 +1,12 @@
-export component MainWindow inherits Window {
-    preferred-height: 480px;
-    preferred-width: 640px;
-    title: "Stella (Early Development)";
-    VerticalLayout {
-        alignment: center;
-        Text {
-            horizontal-alignment: center;
-            text: "Stella";
-            font-size: 40px;
-        }
+import { CurrentView, SideBar } from "components.slint";
 
-        Text {
-            horizontal-alignment: center;
-            text: "A comic reader in early development ^^";
-            font-size: 20px;
-        }
+export component MainWindow inherits Window {
+    min-height: 480px;
+    min-width: 640px;
+    title: "Stella (Early Development)";
+    HorizontalLayout {
+        SideBar { }
+
+        CurrentView { }
     }
 }

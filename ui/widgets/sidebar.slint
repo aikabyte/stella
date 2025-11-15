@@ -1,0 +1,55 @@
+// The navigation bar on the left with clickable icons.
+
+component SideBarItem {
+    in property <image> icon;
+    property <length> icon-size: 25px;
+    property <color> icon-color: darkgray;
+    Image {
+        source: icon;
+        colorize: icon-color;
+        height: icon-size;
+        width: icon-size;
+    }
+}
+
+export component SideBar inherits Rectangle {
+    width: 50px;
+    HorizontalLayout {
+        VerticalLayout {
+            VerticalLayout {
+                alignment: start;
+                HorizontalLayout {
+                    padding-top: 10px;
+                    padding-bottom: 20px;
+                    alignment: center;
+                    SideBarItem {
+                        icon: @image-url("../assets/home.svg");
+                    }
+                }
+
+                HorizontalLayout {
+                    alignment: center;
+                    SideBarItem {
+                        icon: @image-url("../assets/library.svg");
+                    }
+                }
+            }
+
+            VerticalLayout {
+                alignment: end;
+                HorizontalLayout {
+                    padding-bottom: 10px;
+                    alignment: center;
+                    SideBarItem {
+                        icon: @image-url("../assets/settings.svg");
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            width: 1px;
+            background: #363434;
+        }
+    }
+}

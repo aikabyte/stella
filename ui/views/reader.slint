@@ -1,0 +1,44 @@
+// ReaderView is the reading viewport, a scrollable area where the image is displayed.
+
+import {
+    Button,
+    VerticalBox,
+    HorizontalBox,
+    ScrollView,
+} from "std-widgets.slint";
+
+export component Reader {
+    in-out property <image> current_image;
+    callback next-page();
+    callback prev-page();
+    VerticalLayout {
+        VerticalBox {
+            spacing: 20px;
+            Image {
+                source: root.current_image;
+                image-fit: contain;
+                height: 480px;
+                width: 640px;
+            }
+
+            navbar := Rectangle {
+                HorizontalBox {
+                    spacing: 10px;
+                    prev-page := Button {
+                        text: "Previous Page";
+                        clicked => {
+                            root.prev-page()
+                        }
+                    }
+
+                    next-page := Button {
+                        text: "Next Page";
+                        clicked => {
+                            root.next-page()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

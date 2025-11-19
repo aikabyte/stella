@@ -5,8 +5,15 @@ export component MainWindow inherits Window {
     min-width: 640px;
     title: "Stella (Early Development)";
     HorizontalLayout {
-        SideBar { }
+        property <string> current-view: "home";
+        SideBar {
+            switch-view(view) => {
+                current-view = view;
+            }
+        }
 
-        CurrentView { }
+        CurrentView {
+            view: current-view;
+        }
     }
 }

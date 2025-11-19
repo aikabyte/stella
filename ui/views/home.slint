@@ -1,0 +1,28 @@
+// The default view which shows recently read comics etc.
+
+import { Button } from "std-widgets.slint";
+
+export component Home {
+    callback open-comic();
+    VerticalLayout {
+        alignment: center;
+        Text {
+            horizontal-alignment: center;
+            text: "Stella";
+            font-size: 40px;
+        }
+
+        Text {
+            horizontal-alignment: center;
+            text: "A comic reader in early development ^^";
+            font-size: 20px;
+        }
+
+        Button {
+            text: "Open Comic";
+            clicked => {
+                root.open-comic()
+            }
+        }
+    }
+}

@@ -1,19 +1,5 @@
-import { CurrentView, SideBar } from "components.slint";
-
 export component MainWindow inherits Window {
     min-height: 480px;
     min-width: 640px;
-    title: "Stella (Early Development)";
-    HorizontalLayout {
-        property <string> current-view: "home";
-        SideBar {
-            switch-view(view) => {
-                current-view = view;
-            }
-        }
-
-        CurrentView {
-            view: current-view;
-        }
-    }
+    title: "Stella";
 }

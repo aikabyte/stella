@@ -56,8 +56,8 @@ impl ArchiveHandler for Cbz {
 
         let pages = task::spawn_blocking({
             let archive = Arc::clone(&archive);
-            async move || {
-                let mut archive = archive.lock().await;
+            move || {
+                let mut archive = archive.blocking_lock();
                 let is_image_file = |name: &str| {
                     let n = name.to_lowercase();
                     n.ends_with("png")
@@ -76,12 +76,11 @@ impl ArchiveHandler for Cbz {
                         }
                     }
                 }
-                // TODO: sort
+                entries.sort();
                 entries
             }
         })
-        .await?
-        .await;
+        .await?;
 
         let page_count = pages.len();
 
@@ -95,20 +94,18 @@ impl ArchiveHandler for Cbz {
     async fn load_page(&mut self, logical_index: usize) -> Result<ComicPage, ArchiveError> {
         let buffer = task::spawn_blocking({
             let archive = Arc::clone(&self.archive);
-            async move || {
-                let mut archive = archive.lock().await;
-                let mut entry = archive.by_index(logical_index);
-                if let Ok(entry) = archive.by_index(logical_index) {
-                    let mut buffer = Vec::new();
-                    entry.read_to_end(&mut buffer);
-                    Ok(buffer)
-                } else {
-                    todo!()
+            move || {
+                let mut archive = archive.blocking_lock();
+                let mut buffer = Vec::new();
+
+                if let Ok(mut entry) = archive.by_index(logical_index) {
+                    let _ = entry.read_to_end(&mut buffer);
                 }
+
+                buffer
             }
         })
-        .await?
-        .await;
+        .await?;
 
         Ok(ComicPage::new(buffer))
     }

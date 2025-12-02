@@ -11,14 +11,14 @@ use zip::ZipArchive;
 
 #[derive(Debug, Error)]
 pub enum ArchiveError {
-    #[error("Failed to read the file from disk. Error: {0}")]
-    OpenFailed(#[from] std::io::Error),
-
     #[error("Failed to parse the archive. Error: {0}")]
     ExtractionFailed(#[from] zip::result::ZipError),
 
     #[error("Tokio JoinError. Retry the operation.")]
     JoinHandleError(#[from] tokio::task::JoinError),
+
+    #[error("Failed to read the file from disk. Error: {0}")]
+    OpenFailed(#[from] std::io::Error),
 }
 
 #[allow(unused)]

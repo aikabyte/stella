@@ -57,28 +57,20 @@ impl ArchiveHandler for Cbz {
         let pages = task::spawn_blocking({
             let archive = Arc::clone(&archive);
             move || {
-                let mut archive = archive.blocking_lock();
+                let archive = archive.blocking_lock();
                 let is_image_file = |name: &str| {
                     let n = name.to_lowercase();
-                    n.ends_with("png")
-                        || n.ends_with("jpg")
-                        || n.ends_with("jpeg")
-                        || n.ends_with("webp")
+                    n.ends_with("png") || n.ends_with("jpg") || n.ends_with("jpeg")
                 };
 
-                // TODO: Use an iterator.
-                let mut entries = Vec::new();
-                for i in 0..archive.len() {
-                    let file = archive.by_index(i);
-                    if let Ok(file) = file {
-                        let name = file.name().to_string();
-                        if is_image_file(&name) {
-                            entries.push(name)
-                        }
-                    }
-                }
-                entries.sort();
-                entries
+                let mut images: Vec<String> = archive
+                    .file_names()
+                    .filter(|name| is_image_file(name))
+                    .map(|name| name.to_string())
+                    .collect();
+
+                images.sort();
+                images
             }
         })
         .await?;

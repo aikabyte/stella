@@ -4,7 +4,7 @@ slint::include_modules!();
 mod app;
 mod core;
 
-#[tokio::main(flavor = "current_thread")]
+#[tokio::main]
 async fn main() -> Result<(), slint::PlatformError> {
     let ui = MainWindow::new()?;
     ui.run()?;

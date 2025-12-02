@@ -11,13 +11,13 @@ use zip::ZipArchive;
 
 #[derive(Debug, Error)]
 pub enum ArchiveError {
-    #[error("failed to load the file from disk")]
+    #[error("Failed to read the file from disk. Error: {0}")]
     OpenFailed(#[from] std::io::Error),
 
-    #[error("failed to read the archive file. could be corrupt")]
+    #[error("Failed to parse the archive. Error: {0}")]
     ExtractionFailed(#[from] zip::result::ZipError),
 
-    #[error("tokio JoinError (retry the operation")]
+    #[error("Tokio JoinError. Retry the operation.")]
     JoinHandleError(#[from] tokio::task::JoinError),
 }
 
@@ -66,6 +66,7 @@ impl ArchiveHandler for Cbz {
                         || n.ends_with("webp")
                 };
 
+                // TODO: Use an iterator.
                 let mut entries = Vec::new();
                 for i in 0..archive.len() {
                     let file = archive.by_index(i);
@@ -94,11 +95,12 @@ impl ArchiveHandler for Cbz {
     async fn load_page(&mut self, logical_index: usize) -> Result<ComicPage, ArchiveError> {
         let buffer = task::spawn_blocking({
             let archive = Arc::clone(&self.archive);
+            let page_name = self.pages[logical_index - 1].clone();
             move || {
                 let mut archive = archive.blocking_lock();
                 let mut buffer = Vec::new();
 
-                if let Ok(mut entry) = archive.by_index(logical_index) {
+                if let Ok(mut entry) = archive.by_name(&page_name) {
                     let _ = entry.read_to_end(&mut buffer);
                 }
 

@@ -46,24 +46,18 @@ pub struct Cbz {
 
 impl ArchiveHandler for Cbz {
     async fn open(path: PathBuf) -> Result<Self, ArchiveError> {
-        let archive = Arc::new(Mutex::new(
-            task::spawn_blocking(|| {
-                let file = BufReader::new(File::open(path)?);
-                ZipArchive::new(file)
-            })
-            .await??,
-        ));
+        task::spawn_blocking(|| {
+            let reader = BufReader::new(File::open(path)?);
+            let archive = Arc::new(Mutex::new(ZipArchive::new(reader)?));
 
-        let pages = task::spawn_blocking({
-            let archive = Arc::clone(&archive);
-            move || {
-                let archive = archive.blocking_lock();
+            let pages = {
                 let is_image_file = |name: &str| {
                     let n = name.to_lowercase();
                     n.ends_with("png") || n.ends_with("jpg") || n.ends_with("jpeg")
                 };
 
                 let mut images: Vec<String> = archive
+                    .blocking_lock()
                     .file_names()
                     .filter(|name| is_image_file(name))
                     .map(|name| name.to_string())
@@ -71,23 +65,24 @@ impl ArchiveHandler for Cbz {
 
                 images.sort();
                 images
-            }
-        })
-        .await?;
+            };
 
-        let page_count = pages.len();
+            let page_count = pages.len();
 
-        Ok(Self {
-            archive,
-            page_count,
-            pages,
+            Ok(Self {
+                archive,
+                page_count,
+                pages,
+            })
         })
+        .await?
     }
 
     async fn load_page(&mut self, logical_index: usize) -> Result<ComicPage, ArchiveError> {
-        let buffer = task::spawn_blocking({
+        task::spawn_blocking({
             let archive = Arc::clone(&self.archive);
             let page_name = self.pages[logical_index - 1].clone();
+
             move || {
                 let mut archive = archive.blocking_lock();
                 let mut buffer = Vec::new();
@@ -96,12 +91,10 @@ impl ArchiveHandler for Cbz {
                     let _ = entry.read_to_end(&mut buffer);
                 }
 
-                buffer
+                Ok(ComicPage::new(buffer))
             }
         })
-        .await?;
-
-        Ok(ComicPage::new(buffer))
+        .await?
     }
 
     fn num_pages(&self) -> usize {

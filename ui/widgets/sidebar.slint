@@ -1,0 +1,70 @@
+// The navigation bar on the left with clickable icons.
+
+component SideBarItem {
+    in property <image> icon;
+    in property <string> name;
+    property <bool> is-active: Router.current-view == name || ta.has-hover;
+    ta := TouchArea {
+        width: 50px;
+        height: 35px;
+        clicked => {
+            Router.current-view = name
+        }
+    }
+
+    Image {
+        source: icon;
+        colorize: is-active ? whitesmoke : darkgray;
+        height: 25px;
+        width: 25px;
+    }
+}
+
+export component SideBar inherits Rectangle {
+    width: 50px;
+    HorizontalLayout {
+        VerticalLayout {
+            VerticalLayout {
+                alignment: start;
+                spacing: 20px;
+                HorizontalLayout {
+                    padding-top: 10px;
+                    alignment: center;
+                    SideBarItem {
+                        icon: @image-url("../assets/home.svg");
+                        name: "home";
+                    }
+                }
+
+                HorizontalLayout {
+                    alignment: center;
+                    SideBarItem {
+                        icon: @image-url("../assets/library.svg");
+                        name: "library";
+                    }
+                }
+            }
+
+            VerticalLayout {
+                alignment: end;
+                HorizontalLayout {
+                    padding-bottom: 10px;
+                    alignment: center;
+                    SideBarItem {
+                        icon: @image-url("../assets/settings.svg");
+                        name: "settings";
+                    }
+                }
+            }
+        }
+
+        vertical-split-line := Rectangle {
+            width: 1px;
+            background: #363434;
+        }
+    }
+}
+
+export global Router {
+    in property <string> current-view: "home";
+}

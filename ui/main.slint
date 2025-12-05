@@ -1,5 +1,16 @@
+import { SideBar } from "widgets/sidebar.slint";
+import { Views } from "views/views.slint";
+
 export component MainWindow inherits Window {
     min-height: 480px;
     min-width: 640px;
     title: "Stella";
+
+    HorizontalLayout {
+        SideBar { }
+
+        Views { }
+    }
 }
+
+export { Reader } from "views/reader.slint";
